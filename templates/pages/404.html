@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Nie znaleziono...{% endblock title %}
+
+{% block content %}
+  <h1>Nie znaleziono...</h1>
+
+  <p style="margin: 0;">Hmmmm...<br>Wygląda na to, że taki produkt nie istnieje!<br>Zweryfikuj poprawność identyfikatora.</p>
+
+  <a as="button" href="{{ url_for('pages.product') }}" style="width: fit-content;">Powrót</>
+{% endblock content %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Ekstrakcja opinii{% endblock title %}
+
+{% block content %}
+  <h1>Ekstrakcja opinii</h1>
+
+  {% if data == None %}
+  <form>
+    <label for="id">Id produktu:</label>
+    
+    <div class="form-wrapper">
+      <input type="number" id="id" name="id" placeholder="123456" required>
+      <button type="submit" id="form-submit-btn">Wyszukaj</button>
+    </div>
+
+    <p style="margin-top: 36px;">Wpisz identyfikator produktu, aby wyświetlić statystyki.<br>Możesz go znaleźć tutaj:</p><br>
+
+    <img src="{{ url_for('static', filename='product-id.jpg') }}" alt="Zdjęcie pokazujące gdzie znaleźć id produktu" width="535">
+  </form>
+  {% else %}
+    {% if len(data) == 0 %}
+      <p>Ten produkt nie posiada jeszcze opinii...</p>
+    
+    {% else %}
+      <table>
+        <tr>
+          <th style="width: 4.5%;">Id</th>
+          <th style="width: 5.5%;">Autor</th>
+          <th style="width: 6%;">Rekomendacja</th>
+          <th style="width: 3%;">Ocena</th>
+          <th style="width: 7%;">Potwierdzenie zakupem</th>
+          <th style="width: 6%;">Data publikacji</th>
+          <th style="width: 6%;">Czas zakupu</th>
+          <th style="width: 4.75%;">Ilość UP</th>
+          <th style="width: 5.75%;">Ilość DOWN</th>
+          <th>Opinia</th>
+          <th>Wady</th>
+          <th>Zalety</th>
+        </tr>
+
+        {% for review in data %}
+          <tr>
+            <td>{{review.id}}</td>
+            <td>{{review.user}}</td>
+            <td></td>
+            <td>{{review.score}}</td>
+            <td></td>
+            <td>{{review.publish_date}}</td>
+            <td>{{review.usage_date}}</td>
+            <td></td>
+            <td></td>
+            <td>
+              <details>
+                <summary>Treść</summary>
+                <p>{{review.text}}</p>
+              </details>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% endif %}
+  {% endif %}
+{% endblock content %}

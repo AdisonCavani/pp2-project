@@ -3,5 +3,23 @@
 {% block title %}Strona główna{% endblock title %}
 
 {% block content %}
-  <p>Witaj świecie!</p>
+  <h1>Strona główna</h1>
+
+  <ol>
+    <li>Cel aplikacji:</li>
+    <p>Aplikacja umożliwia pobieranie i przetwarzanie danych z serwisu `Ceneo.pl`.<br>Na podstawie identyfikatora wyświetla statystyki, które umożliwiają dalszą analizę produktu.</p>
+
+    <li>Opis działania aplikacji:</li>
+    <p>Aby wyświetlić statystyki o produkcie, należy podać jego identyfikator (np. 62764262).<br>Znajduje się on w `adresie URL`.<br>Następnie, w tle zostanie wykonane zapytanie HTTP GET, które pobierze i przetworzy zawartość strony.<br>Na podstawie tych danych, użytkownik otrzyma statystyki i wykresy dot. wybranego produktu.</p>
+
+    <li>Zastosowane biblioteki:</li>
+    <ul>
+      <li>flask - mikroframework do budowania aplikacji webowych w Python'ie</li>
+      <li>requests - bilbioteka do obsługi protokołu HTTP</li>
+      <li>bs4 - biblioteka umożliwiająca tzw. `web-scraping`</li>
+    </ul>
+
+    <li>Zastosowane podejścia:</li>
+    <p>Projekt wykorzystuje elementy `Programowania obiektowego`.<br>Używa on dwóch modeli danych: `Produkt` oraz `Opinia`.</p>
+  </ol>
 {% endblock content %}

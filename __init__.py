@@ -1,10 +1,7 @@
 from flask import Flask
+import pages
 
-from . import pages
-
-
-def create_app():
+if __name__ == '__main__':
     app = Flask(__name__)
-
     app.register_blueprint(pages.bp)
-    return app
+    app.run(debug=True)

@@ -1,4 +1,3 @@
 ```
-python -m pip install flask
-python -m flask --app . run --debug
+python -m pip install flask requests bs4
 ```
