@@ -23,44 +23,205 @@
       <p>Ten produkt nie posiada jeszcze opinii...</p>
     
     {% else %}
-      <table>
+      <p style="margin: 0">Wyeksportuj dane:</p>
+
+      <div class="product-download-wrapper">
+        <a as="button" onclick="onCsvClick(event)" data="{{dataJson}}">CSV</a>
+        <a as="button" onclick="onJsonClick(event)" data="{{dataJson}}">JSON</a>
+        <a as="button" onclick="onXlsxClick(event)" data="{{dataJson}}">XLSX</a>
+      </div>
+
+      <div class="table-filter-wrapper">
+        <select id="filter-table-select" onchange="filterTable()">
+          <option value="0">Id</option>
+          <option value="1">Autor</option>
+          <option value="2">Rekomendacja</option>
+          <option value="3">Ocena</option>
+          <option value="4">Potwierdzenie zakupem</option>
+          <option value="5">Data publikacji</option>
+          <option value="6">Czas zakupu</option>
+          <option value="7">Like</option>
+          <option value="8">Dislike</option>
+          <option value="9">Opinia</option>
+          <option value="10">Zalety</option>
+          <option value="11">Wady</option>
+        </select>
+
+        <input type="text" id="filter-table-input" onkeyup="filterTable()" placeholder="Filtruj recenzje...">
+      </div>
+
+      <table id="data-table">
         <tr>
-          <th style="width: 4.5%;">Id</th>
-          <th style="width: 5.5%;">Autor</th>
-          <th style="width: 6%;">Rekomendacja</th>
-          <th style="width: 3%;">Ocena</th>
-          <th style="width: 7%;">Potwierdzenie zakupem</th>
-          <th style="width: 6%;">Data publikacji</th>
-          <th style="width: 6%;">Czas zakupu</th>
-          <th style="width: 4.75%;">Ilość UP</th>
-          <th style="width: 5.75%;">Ilość DOWN</th>
-          <th>Opinia</th>
-          <th>Wady</th>
-          <th>Zalety</th>
+          <th style="width: 4.5%;" onclick="sortTable(0)">Id</th>
+          <th style="width: 5.5%;" onclick="sortTable(1)">Autor</th>
+          <th style="width: 6.5%;" onclick="sortTable(2)">Rekomendacja</th>
+          <th style="width: 3.5%;" onclick="sortTable(3)">Ocena</th>
+          <th style="width: 7%;" onclick="sortTable(4)">Potwierdzenie zakupem</th>
+          <th style="width: 6%;" onclick="sortTable(5)">Data publikacji</th>
+          <th style="width: 6%;" onclick="sortTable(6)">Czas zakupu</th>
+          <th style="width: 2.5%;" onclick="sortTable(7)">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-thumb-up" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3" />
+            </svg>
+          </th>
+          <th style="width: 2.5%;" onclick="sortTable(8)">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-thumb-down" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" />
+            </svg>
+          </th>
+          <th onclick="sortTable(9)">Opinia</th>
+          <th style="width: 14%;" onclick="sortTable(10)">Zalety</th>
+          <th style="width: 14%;" onclick="sortTable(11)">Wady</th>
         </tr>
 
         {% for review in data %}
           <tr>
             <td>{{review.id}}</td>
             <td>{{review.user}}</td>
-            <td></td>
+            <td>{{review.recommendation}}</td>
             <td>{{review.score}}</td>
-            <td></td>
+            <td>{{review.verified}}</td>
             <td>{{review.publish_date}}</td>
             <td>{{review.usage_date}}</td>
-            <td></td>
-            <td></td>
+            <td>{{review.likes}}</td>
+            <td>{{review.dislikes}}</td>
             <td>
               <details>
                 <summary>Treść</summary>
                 <p>{{review.text}}</p>
               </details>
             </td>
-            <td></td>
-            <td></td>
+            <td>
+              {% if len(review.adv) > 0 %}
+                <details>
+                  <summary>Lista</summary>
+                  <ul>
+                    {% for adv in review.adv %}
+                      <li>{{adv}}</li>
+                    {% endfor %}
+                  </ul>
+                </details>
+              {% endif %}
+            </td>
+            <td>
+              {% if len(review.disadv) > 0 %}
+                <details>
+                  <summary>Lista</summary>
+                  <ul>
+                    {% for disadv in review.disadv %}
+                      <li>{{disadv}}</li>
+                    {% endfor %}
+                  </ul>
+                </details>
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </table>
+
+      <script>
+        function onCsvClick(event) {
+          const anchor = event.currentTarget
+          const obj = JSON.parse(anchor.getAttribute("data"))
+
+          const array = [Object.keys(obj[0])].concat(obj)
+          const csv = array.map(it => {
+            return Object.values(it).toString()
+          }).join('\n')
+
+          const bytes = new TextEncoder().encode(csv);
+          const blob = new Blob([bytes], {type: "text/csv;charset=utf-8"});
+
+          anchor.download = "reviews.csv"
+          anchor.href = window.URL.createObjectURL(blob)
+        }
+
+        function onJsonClick(event) {
+          const anchor = event.currentTarget
+          const bytes = new TextEncoder().encode(JSON.stringify(JSON.parse(anchor.getAttribute("data"))));
+          const blob = new Blob([bytes], {type: "application/json;charset=utf-8"});
+
+          anchor.download = "reviews.json"
+          anchor.href = window.URL.createObjectURL(blob)
+        }
+
+        function onXlsxClick(event) {
+          const anchor = event.currentTarget
+          const data = JSON.parse(anchor.getAttribute("data"))
+
+          var ws = XLSX.utils.json_to_sheet(data);
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Reviews");
+          XLSX.writeFile(wb, "reviews.xlsx");
+        }
+      
+        // Source: https://www.w3schools.com/howto/howto_js_filter_table.asp
+        function filterTable() {
+          var input, filter, table, tr, td, i, txtValue, colIdx;
+          input = document.getElementById("filter-table-input");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("data-table");
+          tr = table.getElementsByTagName("tr");
+          colIdx = document.getElementById("filter-table-select").value
+          
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[colIdx];
+
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }       
+          }
+        }
+
+        // Source: https://www.w3schools.com/howto/howto_js_sort_table.asp
+        function sortTable(colNum) {
+          var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+          table = document.getElementById("data-table");
+          switching = true;
+          dir = "asc";
+          
+          while (switching) {
+            switching = false;
+            rows = table.rows;
+
+            for (i = 1; i < (rows.length - 1); i++) {
+              shouldSwitch = false;
+              x = rows[i].getElementsByTagName("TD")[colNum];
+              y = rows[i + 1].getElementsByTagName("TD")[colNum];
+              
+              if (dir == "asc") {
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                  shouldSwitch = true;
+                  break;
+                }
+              } else if (dir == "desc") {
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                  shouldSwitch = true;
+                  break;
+                }
+              }
+            }
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              switchcount ++;
+            } else {
+              if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+              }
+            }
+          }
+        }
+      </script>
     {% endif %}
   {% endif %}
 {% endblock content %}

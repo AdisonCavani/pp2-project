@@ -1,8 +1,7 @@
+import json
 from flask import Blueprint, render_template, request
-from bs4 import BeautifulSoup
 from requests import get
-from classes import Review
-from utils import parseHtml
+from utils import parse_html
 
 bp = Blueprint("pages", __name__)
 
@@ -24,7 +23,9 @@ def product():
     response = get(f"https://www.ceneo.pl/{product_id}#tab=reviews", allow_redirects=False)
 
     if response.status_code == 200:
-        return render_template("pages/product.html", data=parseHtml(response.text), len=len)
+        data = parse_html(response.text)
+        dataJson = json.dumps(data, default = lambda x: x.__dict__)
+        return render_template("pages/product.html", data=data, dataJson=dataJson, len=len)
     
     return render_template("pages/404.html")
 
