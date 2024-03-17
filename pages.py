@@ -38,7 +38,7 @@ def product_stats():
 
 @bp.route("/product-list")
 def product_list():
-    products_idx = ["30976453", "158184470", "157746229", "157746229", "158184470", "30976453"]
+    products_idx = ["30976453", "106821564", "152126427", "158184470", "153373072", "157746229"]
     products: list[Product] = []
 
     for product_id in products_idx:
@@ -54,7 +54,7 @@ def product_list():
             adv_count = sum(len(review.adv) for review in reviews)
             disadv_count = sum(len(review.disadv) for review in reviews)
             total_score = sum(review.score for review in reviews)
-            avg_score = round(total_score / review_count if review_count > 0 else 0)
+            avg_score = round(total_score / review_count if review_count > 0 else 0, 2)
 
             products.append(Product(
                 product.id,
