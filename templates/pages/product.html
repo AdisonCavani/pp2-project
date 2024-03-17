@@ -23,12 +23,17 @@
       <p>Ten produkt nie posiada jeszcze opinii...</p>
     
     {% else %}
+      <form action="{{ url_for('pages.product_stats') }}" method="post">
+        <button as="a" type="submit">Wykresy dotyczące produktu</button>
+        <input name="data" type="text" value="{{dataJson}}" style="display: none;">
+      </form>
+
       <p style="margin: 0">Wyeksportuj dane:</p>
 
-      <div class="product-download-wrapper">
-        <a as="button" onclick="onCsvClick(event)" data="{{dataJson}}">CSV</a>
-        <a as="button" onclick="onJsonClick(event)" data="{{dataJson}}">JSON</a>
-        <a as="button" onclick="onXlsxClick(event)" data="{{dataJson}}">XLSX</a>
+      <div class="product-download-wrapper" data="{{dataJson}}">
+        <a as="button" onclick="onCsvClick(event)">CSV</a>
+        <a as="button" onclick="onJsonClick(event)">JSON</a>
+        <a as="button" onclick="onXlsxClick(event)">XLSX</a>
       </div>
 
       <div class="table-filter-wrapper">
@@ -121,42 +126,7 @@
         {% endfor %}
       </table>
 
-      <script>
-        function onCsvClick(event) {
-          const anchor = event.currentTarget
-          const obj = JSON.parse(anchor.getAttribute("data"))
-
-          const array = [Object.keys(obj[0])].concat(obj)
-          const csv = array.map(it => {
-            return Object.values(it).toString()
-          }).join('\n')
-
-          const bytes = new TextEncoder().encode(csv);
-          const blob = new Blob([bytes], {type: "text/csv;charset=utf-8"});
-
-          anchor.download = "reviews.csv"
-          anchor.href = window.URL.createObjectURL(blob)
-        }
-
-        function onJsonClick(event) {
-          const anchor = event.currentTarget
-          const bytes = new TextEncoder().encode(JSON.stringify(JSON.parse(anchor.getAttribute("data"))));
-          const blob = new Blob([bytes], {type: "application/json;charset=utf-8"});
-
-          anchor.download = "reviews.json"
-          anchor.href = window.URL.createObjectURL(blob)
-        }
-
-        function onXlsxClick(event) {
-          const anchor = event.currentTarget
-          const data = JSON.parse(anchor.getAttribute("data"))
-
-          var ws = XLSX.utils.json_to_sheet(data);
-          var wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "Reviews");
-          XLSX.writeFile(wb, "reviews.xlsx");
-        }
-      
+      <script>      
         // Source: https://www.w3schools.com/howto/howto_js_filter_table.asp
         function filterTable() {
           var input, filter, table, tr, td, i, txtValue, colIdx;

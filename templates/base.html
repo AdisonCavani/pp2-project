@@ -4,12 +4,49 @@
   <title>{% block title %}{% endblock title %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.1/xlsx.full.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 </head>
 <body>
 {% include("_navigation.html") %}
 
-<main>
-  {% block content %}{% endblock content %}
-<main>
+  <main>
+    {% block content %}{% endblock content %}
+  <main>
 </body>
+<script>
+  function onCsvClick(event) {
+    const anchor = event.currentTarget
+    const obj = JSON.parse(anchor.parentNode.getAttribute("data"))
+
+    const array = [Object.keys(obj[0])].concat(obj)
+    const csv = array.map(it => {
+      return Object.values(it).toString()
+    }).join('\n')
+
+    const bytes = new TextEncoder().encode(csv);
+    const blob = new Blob([bytes], {type: "text/csv;charset=utf-8"});
+
+    anchor.download = "reviews.csv"
+    anchor.href = window.URL.createObjectURL(blob)
+  }
+
+  function onJsonClick(event) {
+    const anchor = event.currentTarget
+    const bytes = new TextEncoder().encode(JSON.stringify(JSON.parse(anchor.parentNode.getAttribute("data"))));
+    const blob = new Blob([bytes], {type: "application/json;charset=utf-8"});
+
+    anchor.download = "reviews.json"
+    anchor.href = window.URL.createObjectURL(blob)
+  }
+
+  function onXlsxClick(event) {
+    const anchor = event.currentTarget
+    const data = JSON.parse(anchor.parentNode.getAttribute("data"))
+
+    var ws = XLSX.utils.json_to_sheet(data);
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Reviews");
+    XLSX.writeFile(wb, "reviews.xlsx");
+  }
+</script>
 </html>

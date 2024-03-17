@@ -4,4 +4,33 @@
 
 {% block content %}
 
+<h1>Lista produktów</h1>
+
+<section class="product-list-wrapper">
+  {% for product in products %}
+    <div class="product">
+      <a href="https://www.ceneo.pl/{{product.id}}">{{product.name}}</a>
+
+      <div class="product-desc">
+        <img src="{{product.img}}" alt="Product image">
+
+        <div class="product-desc-list">
+          <ul>
+            <li>liczba opinii: {{product.review_count}}</li>
+            <li>liczba zalet: {{product.adv_count}}</li>
+            <li>liczba wad: {{product.disadv_count}}</li>
+            <li>średnia ocena: {{product.avg_score}}</li>
+          </ul>
+
+          <div class="product-desc-download" data="{{product.reviews_json}}">
+            <a as="button" onclick="onCsvClick(event)">CSV</a>
+            <a as="button" onclick="onJsonClick(event)">JSON</a>
+            <a as="button" onclick="onXlsxClick(event)">XLSX</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</section>
+
 {% endblock content %}

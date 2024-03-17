@@ -1,8 +1,17 @@
 from bs4 import BeautifulSoup
 from requests import get
-from classes import Review
+from classes import ProductInfo, Review
 
-def parse_html(html: str) -> list[Review]:
+def parse_product(html: str) -> ProductInfo:
+    soup = BeautifulSoup(html, "html.parser")
+    
+    id = soup.find("meta", property="product:retailer_item_id")["content"]
+    name = soup.find("h1", class_="product-top__product-info__name").text.strip()
+    img = soup.find("img", class_="js_gallery-media")["src"]
+
+    return ProductInfo(id, name, img)
+
+def parse_reviews(html: str) -> list[Review]:
     review_list: list[Review] = []
     soup = BeautifulSoup(html, "html.parser")
 
@@ -61,6 +70,6 @@ def parse_html(html: str) -> list[Review]:
         if pagination_next is not None:
             pagination_next_href = pagination_next["href"]
             response = get(f"https://www.ceneo.pl{pagination_next_href}", allow_redirects=False)
-            return review_list + parse_html(response.text)
+            return review_list + parse_reviews(response.text)
 
     return review_list

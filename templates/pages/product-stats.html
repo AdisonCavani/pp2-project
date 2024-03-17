@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Wykresy dotyczące produktu{% endblock title %}
+
+{% block content %}
+  <h1>Wykresy dotyczące produktu</h1>
+
+  <button as="a" onclick="history.back()">Powrót do strony produktu</button>
+
+  <div id="chart-wrapper" data="{{data}}">
+    <canvas id="pie-chart"></canvas>
+    <canvas id="bar-chart"></canvas>
+  </div>
+
+  <script>
+    const wrapper = document.getElementById("chart-wrapper")
+    const data = JSON.parse(wrapper.getAttribute("data"))
+    
+    const pieColors = [
+      "#52525b",
+      "#bfbaba"
+    ]
+    const pieLabels = ["Rekomendacja", "Brak rekomendacji"];
+    const pieData = [0, 0];
+
+    data.forEach((review) => {
+      if (review.recommendation)
+        pieData[0] += 1
+      else
+        pieData[1] += 1
+    })
+
+    const barLabels = []
+    data.forEach((review) => {
+      if (!barLabels.includes(review.score))
+        barLabels.push(review.score)
+    })
+    barLabels.sort()
+
+    const barColors = ["#52525b"]
+    barData = []
+    data
+      .filter((value, index, self) => index === self.findIndex((x) => x.score === value.score))
+      .sort((a, b) => a.score - b.score)
+      .forEach((review) => {
+        const score = review.score
+        const count = data.filter(x => x.score === score).length
+
+        barData.push(count)
+    })
+
+    new Chart("pie-chart", {
+      type: "pie",
+      data: {
+        labels: pieLabels,
+        datasets: [
+          {
+            backgroundColor: pieColors,
+            data: pieData
+          },
+        ],
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: "bottom"
+          },
+          title: {
+            display: true,
+            text: "Podział rekomendacji",
+              font: {
+              size: 16,
+              family: "Courier New"
+            }
+          }
+        },
+      }
+    });
+
+    new Chart("bar-chart", {
+      type: "bar",
+      data: {
+        labels: barLabels,
+        datasets: [
+          {
+            backgroundColor: barColors,
+            data: barData
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: "Liczba opinii z podziałem na ocenę",
+              font: {
+              size: 16,
+              family: "Courier New"
+            }
+          }
+        }
+      }
+    });
+  </script>
+{% endblock content %}
